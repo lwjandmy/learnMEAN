@@ -1,0 +1,265 @@
+<div class="text-right" ng-hide="me">
+  <input class="btn btn-default" type="button" value="登录" data-toggle="modal" data-target="#modal_login">
+  <input class="btn btn-default" type="button" value="注册" data-toggle="modal" data-target="#modal_register">
+</div>
+<div class="text-right" ng-show="me">
+  <span class="label label-success">{{ me.call_name }}</span>
+  <span class="label label-danger">余额:{{ me.money }}</span>
+  <input class="btn btn-default" type="button" value="退出" ng-click="logout()">
+</div>
+
+<div class="list-group" ng-show="bonus_list" ng-repeat="bonus in bonus_list">
+  <div class="list-group-item">
+    <div class="panel panel-success">
+      <div class="panel-heading">{{ bonus.sender_call_name }}发来红包:
+        <span class="badge">{{ bonus.each_bonus_money }}元</span>
+        X
+        <span class="badge">{{ bonus.bonus_count }}份</span>
+      </div>
+      <div class="panel-body">
+        <span>{{ bonus.bless_message }}</span>
+        <input class="btn btn-danger" type="button" style="float:right;" value="抢红包" ng-click="get_bonus(bonus.id)">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="text-center">
+  <input class="btn btn-info" type="button" value="我要发红包" data-toggle="modal" data-target="#modal_give_bonus">
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 登录框 -->
+<div class="modal fade" id="modal_login" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">登录</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group">
+          <label for="modal_login_username">用户名:</label>
+          <input type="text" class="form-control" id="modal_login_username" ng-model="modal_login_username" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+          <label for="modal_login_password">密码:</label>
+          <input type="password" class="form-control" id="modal_login_password" ng-model="modal_login_password" placeholder="请输入密码">
+        </div>
+        <div class="form-group" ng-show="err">
+          <p class="text-danger">{{ err }}</p>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="login()">登录</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(function () {
+    $("#modal_login").on('shown.bs.modal', function (event) {
+      $('#modal_login_username').focus();
+    })
+  })
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 注册框 -->
+<div class="modal fade" id="modal_register" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">注册</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group">
+          <label for="modal_register_username">用户名:</label>
+          <input type="text" class="form-control" id="modal_register_username" ng-model="modal_register_username" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+          <label for="modal_register_password">密码:</label>
+          <input type="password" class="form-control" id="modal_register_password" ng-model="modal_register_password" placeholder="请输入密码">
+        </div>
+        <div class="form-group">
+          <label for="modal_register_call_name">昵称:</label>
+          <input type="text" class="form-control" id="modal_register_call_name" ng-model="modal_register_call_name" placeholder="请输入昵称">
+        </div>
+        <div class="form-group" ng-show="err">
+          <p class="text-danger">{{ err }}</p>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="register()">注册</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(function () {
+    $("#modal_register").on('shown.bs.modal', function (event) {
+      $('#modal_register_username').focus();
+    })
+  })
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 发红包 -->
+<div class="modal fade" id="modal_give_bonus" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">发红包</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group">
+          <label for="modal_give_bonus_bless_message">祝福:</label>
+          <input type="text" class="form-control" id="modal_give_bonus_bless_message" ng-model="modal_give_bonus_bless_message" placeholder="写下对朋友的红包祝福, 如: 新年好!">
+        </div>
+
+        <div class="form-group">
+          <label for="modal_give_bonus_bonus_count">红包数量:</label>
+          <input type="text" class="form-control" id="modal_give_bonus_bonus_count" ng-model="modal_give_bonus_bonus_count" placeholder="写下要发送的红包数量, 如: 5">
+        </div>
+
+        <div class="form-group">
+          <label for="modal_give_bonus_each_bonus_money">每份红包金额:</label>
+          <input type="text" class="form-control" id="modal_give_bonus_each_bonus_money" ng-model="modal_give_bonus_each_bonus_money" placeholder="写下每份红包的金额, 如: 2">
+        </div>
+
+        <div class="form-group" ng-show="modal_give_bonus_bonus_count && modal_give_bonus_each_bonus_money">
+          <label for="modal_give_bonus_total_money">总金额:</label>
+          <input type="text" class="form-control" id="modal_give_bonus_total_money" readonly="readonly" placeholder="这里会自动计算出总金额" value="{{ modal_give_bonus_bonus_count * modal_give_bonus_each_bonus_money }}">
+        </div>
+
+        <div class="form-group" ng-show="err">
+          <p class="text-danger">{{ err }}</p>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="give_bonus()">发红包</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(function () {
+    $("#modal_give_bonus").on('shown.bs.modal', function (event) {
+      $('#modal_give_bonus_bless_message').focus();
+    })
+  })
+</script>
+
+
+
+
+
+
+
+
+
+<!-- 抢到红包 -->
+<div class="modal fade" id="modal_get_bonus" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-danger">抢红包</h4>
+      </div>
+      <div class="modal-body">
+
+        抢到
+        <span class="label label-success">{{ gotted_bonus.sender_call_name }}</span>
+        发来的
+        <span class="badge">{{ gotted_bonus.each_bonus_money }}元</span>
+        红包, 您的余额增长到
+        <span class="label label-danger">{{ me.money }}元</span>
+        !
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">晓得了</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--到时候截图还要用!-->
+<!--<script type="text/javascript">-->
+  <!--jQuery(function () {-->
+    <!--$("#modal_get_bonus").modal();-->
+  <!--})-->
+<!--</script>-->
